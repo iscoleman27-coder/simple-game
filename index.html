@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Collect the Square</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #game {
+      position: relative;
+      width: 400px;
+      height: 300px;
+      background: #111;
+      border: 2px solid #555;
+      margin-top: 20px;
+    }
+    #player {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #4CAF50;
+      left: 190px;
+      top: 140px;
+    }
+    #target {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      background: #FF5722;
+    }
+    #score {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Collect the Square</h2>
+  <div id="game">
+    <div id="player"></div>
+    <div id="target"></div>
+  </div>
+  <div id="score">Score: 0</div>
+  <script>
+    const game = document.getElementById("game");
+    const player = document.getElementById("player");
+    const target = document.getElementById("target");
+    const scoreText = document.getElementById("score");
+
+    let x = 190;
+    let y = 140;
+    let speed = 5;
+    let score = 0;
+
+    function moveTarget() {
+      const maxX = game.clientWidth - target.clientWidth;
+      const maxY = game.clientHeight - target.clientHeight;
+      target.style.left = Math.floor(Math.random() * maxX) + "px";
+      target.style.top = Math.floor(Math.random() * maxY) + "px";
+    }
+
+    function checkCollision() {
+      const p = player.getBoundingClientRect();
+      const t = target.getBoundingClientRect();
+      if (
+        p.left < t.right &&
+        p.right > t.left &&
+        p.top < t.bottom &&
+        p.bottom > t.top
+      ) {
+        score++;
+        scoreText.textContent = "Score: " + score;
+        moveTarget();
+      }
+    }
+
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowUp" || e.key === "w") y -= speed;
+      if (e.key === "ArrowDown" || e.key === "s") y += speed;
+      if (e.key === "ArrowLeft" || e.key === "a") x -= speed;
+      if (e.key === "ArrowRight" || e.key === "d") x += speed;
+
+      x = Math.max(0, Math.min(x, game.clientWidth - player.clientWidth));
+      y = Math.max(0, Math.min(y, game.clientHeight - player.clientHeight));
+
+      player.style.left = x + "px";
+      player.style.top = y + "px";
+      checkCollision();
+    });
+
+    moveTarget();
+  </script>
+</body>
+</html>
